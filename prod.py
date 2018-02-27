@@ -199,7 +199,15 @@ class FeatureConstructor:
     def FamilyDayWiseTemporal(self):
 
         #Using sales data from training data
-        #Need to normalize within a family for projecting fair number of transactions
+        #Need to normalize(max abs scale) within a family for projecting fair number of transactions
+        currentTrain_df = self.train_df.loc[:, ['date', 'item_nbr', 'unit_sales']]
+        normalizedSales = currentTrain_df.groupby(by=['item_nbr']).transform(lambda x: pp.maxabs_scale(x))
+        currentTrain_df = currentTrain_df.join(normalizedSales, rsuffix= '_normalized', how='inner')
+
+        #join with item_df to get class info
+        currentTrain_df.join(self.items_df, )
+
+
         return
 
     def FamilyWeekWiseTemporal(self):
